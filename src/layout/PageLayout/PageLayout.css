@@ -1,0 +1,10 @@
+.pageLayoutContainer {
+    display: flex;
+    justify-content: center;
+}
+
+.childContainer {
+  width: 100%;
+  max-width: 1432px;
+  margin: 16px;
+}
