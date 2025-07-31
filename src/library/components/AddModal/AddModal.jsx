@@ -8,7 +8,7 @@ import {
   TextField,
 } from "@mui/material";
 
-const AddModal = (
+const AddModal = ({
   open,
   onClose,
   newItem,
@@ -19,7 +19,7 @@ const AddModal = (
   title = "Add Item",
   primaryText = "Add",
   secondaryText = "Cancel",  
-) => {
+}) => {
 
   return (
     <Dialog open={open} onClose={onClose}>

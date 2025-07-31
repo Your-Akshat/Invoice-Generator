@@ -4,8 +4,20 @@
   overflow: hidden;
   padding: 20px;
   margin: 20px;
+  text-align: center;
 
-    .main_heading{
-        text-align: center;
-    }
+  .heading{
+      text-align: center;
+  }
+
+  .notFoundError{
+    text-align: center;
+  }
+
+  .addButton{
+    padding: 8px 16px;
+    margin: 24px 0;
+    font-weight: 550;
+    width: 160px;
+  }
 }
