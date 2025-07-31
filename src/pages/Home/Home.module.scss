@@ -1,0 +1,11 @@
+.paper_container {
+  border-radius: 16px !important;
+  max-width: calc(100vw - 256px) !important;
+  overflow: hidden;
+  padding: 20px;
+  margin: 20px;
+
+    .main_heading{
+        text-align: center;
+    }
+}
