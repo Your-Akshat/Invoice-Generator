@@ -3,7 +3,7 @@ import { TableRow, TableCell, Typography, IconButton } from "@mui/material";
 import { Delete } from "@mui/icons-material";
 import DeleteDialogue from "../../../library/components/DeleteDialogue/DeleteDialogue";
 
-const ItemRow = ({ item, fetchUpdates }) => {
+const ItemRow = ({ item, onDelete }) => {
   const [isDialogueOpen, setDialogueOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -18,8 +18,7 @@ const ItemRow = ({ item, fetchUpdates }) => {
   const deleteItem = async () => {
     try {
       setIsLoading(true);
-      console.log(item?.name, "deleted");
-      await fetchUpdates();
+      await onDelete();
       closeDeleteDialogue();
       setIsLoading(false);
     } catch (error) {

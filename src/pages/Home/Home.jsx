@@ -90,6 +90,10 @@ const Home = () => {
     }));
   };
 
+  const deleteItem = (index) => {
+    setInvoiceItems((prev) => prev.filter((_, i) => i !== index));
+  };
+
   const getInvoiceItems = async () => {
     try {
       setIsLoading(true);
@@ -135,7 +139,7 @@ const Home = () => {
                 <ItemRow
                   key={index}
                   item={item}
-                  fetchUpdates={getInvoiceItems}
+                  onDelete={() => deleteItem(index)}
                 />
               ))
             )}
