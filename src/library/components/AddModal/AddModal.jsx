@@ -13,14 +13,13 @@ const AddModal = ({
   onClose,
   newItem,
   errors,
-  handleInputChange,
+  handleInputChanges,
   onPrimaryClick,
   onSecondaryClick,
   title = "Add Item",
   primaryText = "Add",
-  secondaryText = "Cancel",  
+  secondaryText = "Cancel",
 }) => {
-
   return (
     <Dialog open={open} onClose={onClose}>
       <DialogTitle>{title}</DialogTitle>
@@ -31,7 +30,7 @@ const AddModal = ({
           label="Item Name"
           name="name"
           value={newItem?.name ?? ""}
-          onChange={handleInputChange}
+          onChange={handleInputChanges}
           error={!!errors?.name}
           helperText={errors?.name}
         />
@@ -41,17 +40,17 @@ const AddModal = ({
           label="Price"
           name="price"
           value={newItem?.price ?? ""}
-          onChange={handleInputChange}
+          onChange={handleInputChanges}
           error={!!errors?.price}
           helperText={errors?.price}
         />
         <TextField
           fullWidth
           margin="dense"
-          label="Qunatity"
+          label="Quantity"
           name="quantity"
           value={newItem?.quantity ?? ""}
-          onChange={handleInputChange}
+          onChange={handleInputChanges}
           error={!!errors?.quantity}
           helperText={errors?.quantity}
         />

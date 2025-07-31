@@ -9,6 +9,7 @@ import {
   TableCell,
   TableBody,
   Button,
+  Typography,
 } from "@mui/material";
 import ItemRow from "./ItemRow/ItemRow";
 import Payment from "./Payment Section/Payment";
@@ -34,12 +35,10 @@ const Home = () => {
   });
   const [myErrors, setMyErrors] = useState({});
   const subTotal = invoiceItems.reduce(
-    (total, item) => total + item.price * item.quantity,
+    (total, item) => total + item?.price * item?.quantity,
     0
   );
-  const taxRate = 0.05;
-  const taxAmount = subTotal * taxRate;
-
+  const taxAmount = subTotal * 0.05;
   const grandTotal = subTotal + taxAmount;
 
   const openAddModal = () => {
@@ -69,11 +68,25 @@ const Home = () => {
 
   const validateForm = () => {
     const newErrors = {};
+
     if (!newItem.name.trim()) newErrors.name = "Name is required";
-    if (!newItem.price || Number(newItem.price) <= 0)
+
+    if (!newItem.price) {
+      newErrors.price = "Price is required";
+    } else if (isNaN(newItem.price)) {
+      newErrors.price = "Price must be a number";
+    } else if (Number(newItem.price) <= 0) {
       newErrors.price = "Price must be greater than 0";
-    if (!newItem.quantity || Number(newItem.quantity) <= 0)
+    }
+
+    if (!newItem.quantity) {
+      newErrors.quantity = "Quantity is required";
+    } else if (isNaN(newItem.quantity)) {
+      newErrors.quantity = "Quantity must be a number";
+    } else if (Number(newItem.quantity) <= 0) {
       newErrors.quantity = "Quantity must be greater than 0";
+    }
+
     return newErrors;
   };
 
@@ -88,7 +101,8 @@ const Home = () => {
   const getInvoiceItems = async () => {
     try {
       setIsLoading(true);
-      setInvoiceItems(tempItems);
+      //   setInvoiceItems(tempItems);
+      setInvoiceItems([]);
       setIsLoading(false);
     } catch (error) {
       console.error("Failed to fetch: ", error);
@@ -118,7 +132,11 @@ const Home = () => {
             {invoiceItems.length === 0 ? (
               <TableRow>
                 <TableCell className={styles.notFoundError} colSpan={5}>
-                  Fetching Items... Please wait!!
+                  {invoiceItems?.length === 0 ? (
+                    <Typography>No items available</Typography>
+                  ) : (
+                    <Typography>Fetching Items... Please wait!!</Typography>
+                  )}
                 </TableCell>
               </TableRow>
             ) : (
