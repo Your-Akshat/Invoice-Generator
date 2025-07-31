@@ -16,14 +16,6 @@ import Payment from "./Payment Section/Payment";
 import AddModal from "./../../library/components/AddModal/AddModal";
 import { throttle } from "lodash";
 
-const tempItems = [
-  { name: "Item1", price: 10, quantity: 5 },
-  { name: "Item2", price: 20, quantity: 4 },
-  { name: "Item3", price: 30, quantity: 3 },
-  { name: "Item4", price: 40, quantity: 2 },
-  { name: "Item5", price: 50, quantity: 1 },
-];
-
 const Home = () => {
   const [invoiceItems, setInvoiceItems] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -101,7 +93,6 @@ const Home = () => {
   const getInvoiceItems = async () => {
     try {
       setIsLoading(true);
-      //   setInvoiceItems(tempItems);
       setInvoiceItems([]);
       setIsLoading(false);
     } catch (error) {
