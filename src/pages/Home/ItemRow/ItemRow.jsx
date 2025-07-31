@@ -34,13 +34,15 @@ const ItemRow = ({ item, onDelete }) => {
             <Typography>{item?.name}</Typography>
           </TableCell>
           <TableCell>
-            <Typography>{item?.price}</Typography>
+            <Typography>{Number(item?.price).toFixed(2)}</Typography>
           </TableCell>
           <TableCell>
             <Typography>{item?.quantity}</Typography>
           </TableCell>
           <TableCell>
-            <Typography>{item?.quantity * item?.price || 0}</Typography>
+            <Typography>
+              {Number(item?.quantity * item?.price).toFixed(2) || 0}
+            </Typography>
           </TableCell>
           <TableCell>
             <IconButton size="small" color="error" onClick={openDeleteDialogue}>

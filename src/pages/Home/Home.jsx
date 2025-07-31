@@ -50,6 +50,7 @@ const Home = () => {
         setIsLoading(true);
         setInvoiceItems((prev) => [...prev, newItem]);
         setNewItem({ name: "", price: 0, quantity: 0 });
+        setMyErrors({});
         closeAddModal();
         setIsLoading(false);
       } catch (error) {
@@ -61,7 +62,14 @@ const Home = () => {
   const validateForm = () => {
     const newErrors = {};
 
-    if (!newItem.name.trim()) newErrors.name = "Name is required";
+    if (!newItem.name.trim()) {
+      newErrors.name = "Name is required";
+    } else if (!isNaN(newItem?.name?.trim())) {
+      newErrors.name = "Number can't be name";
+    } else if (!/^[a-zA-Z0-9-_]+$/.test(newItem.name.trim())) {
+      newErrors.name =
+        "Name can only contain letters, numbers, hyphens (-), and underscores (_)";
+    }
 
     if (!newItem.price) {
       newErrors.price = "Price is required";
@@ -75,7 +83,7 @@ const Home = () => {
       newErrors.quantity = "Quantity is required";
     } else if (isNaN(newItem.quantity)) {
       newErrors.quantity = "Quantity must be a number";
-    } else if (Number(newItem.quantity) <= 0) {
+    } else if (Math.ceil(Number(newItem.quantity)) <= 0) {
       newErrors.quantity = "Quantity must be greater than 0";
     }
 
@@ -84,9 +92,16 @@ const Home = () => {
 
   const handleInputChanges = (e) => {
     const { name, value } = e.target;
+    let updatedValue = value;
+
+    if (name === "quantity") {
+      const numericValue = Number(value);
+      updatedValue = isNaN(numericValue) ? value : Math.ceil(numericValue);
+    }
+
     setNewItem((prev) => ({
       ...prev,
-      [name]: value,
+      [name]: updatedValue,
     }));
   };
 
