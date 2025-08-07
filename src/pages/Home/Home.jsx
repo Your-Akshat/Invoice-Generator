@@ -26,6 +26,8 @@ const Home = () => {
     quantity: 0,
   });
   const [myErrors, setMyErrors] = useState({});
+  const [isPrintingPDF, setPrintingPDF] = useState(false);
+
   const subTotal = invoiceItems.reduce(
     (total, item) => total + item?.price * item?.quantity,
     0
@@ -62,29 +64,39 @@ const Home = () => {
   const validateForm = () => {
     const newErrors = {};
 
-    if (!newItem.name.trim()) {
+    if (!newItem?.name?.trim()) {
       newErrors.name = "Name is required";
     } else if (!isNaN(newItem?.name?.trim())) {
       newErrors.name = "Number can't be name";
-    } else if (!/^[a-zA-Z0-9-_]+$/.test(newItem.name.trim())) {
+    } else if (!/^[a-zA-Z0-9-_ ]+$/?.test(newItem?.name?.trim())) {
       newErrors.name =
-        "Name can only contain letters, numbers, hyphens (-), and underscores (_)";
+        "Name can only contain letters, numbers, hyphens (-), underscores (_) and spaces";
+    } else if (newItem?.name?.trim().length > 35) {
+      newErrors.name = "Name is longer than expected";
     }
 
-    if (!newItem.price) {
+    if (!newItem?.price?.toString()?.trim()) {
       newErrors.price = "Price is required";
-    } else if (isNaN(newItem.price)) {
+    } else if (isNaN(newItem?.price)) {
       newErrors.price = "Price must be a number";
-    } else if (Number(newItem.price) <= 0) {
+    } else if (Number(newItem?.price) <= 0) {
       newErrors.price = "Price must be greater than 0";
+    } else if (Number(newItem?.price) > 24999) {
+      newErrors.price = "Price can't be greater than 24,999";
+    } else if (/e/i?.test(newItem?.price?.toString())) {
+      newErrors.price = "Scientific notation not allowed";
     }
 
-    if (!newItem.quantity) {
+    if (!newItem?.quantity?.toString()?.trim()) {
       newErrors.quantity = "Quantity is required";
-    } else if (isNaN(newItem.quantity)) {
+    } else if (isNaN(newItem?.quantity)) {
       newErrors.quantity = "Quantity must be a number";
-    } else if (Math.ceil(Number(newItem.quantity)) <= 0) {
+    } else if (Math?.ceil(Number(newItem?.quantity)) <= 0) {
       newErrors.quantity = "Quantity must be greater than 0";
+    } else if (Number(newItem?.quantity) > 9999) {
+      newErrors.quantity = "Quantity can't be more than 9999";
+    } else if (/e/i?.test(newItem?.quantity?.toString())) {
+      newErrors.quantity = "Scientific notation not allowed";
     }
 
     return newErrors;
@@ -109,19 +121,39 @@ const Home = () => {
     setInvoiceItems((prev) => prev.filter((_, i) => i !== index));
   };
 
-  const getInvoiceItems = async () => {
+  const printPDF = async () => {
+    setPrintingPDF(true);
+    // add printing logic
+    setPrintingPDF(false);
+  };
+
+  const removeAllInvoiceItems = () => {
+    localStorage.removeItem("invoice_items");
+    setInvoiceItems([]);
+  };
+
+  const getInvoiceItems = () => {
+    setIsLoading(true);
     try {
-      setIsLoading(true);
-      setInvoiceItems([]);
-      setIsLoading(false);
+      const storedItems = localStorage.getItem("invoice_items");
+      setInvoiceItems(storedItems ? JSON.parse(storedItems) : []);
     } catch (error) {
       console.error("Failed to fetch: ", error);
     }
+    setIsLoading(false);
+  };
+
+  const syncInvoiceItems = () => {
+    localStorage.setItem("invoice_items", JSON.stringify(invoiceItems));
   };
 
   useEffect(() => {
     getInvoiceItems();
   }, []);
+
+  useEffect(() => {
+    syncInvoiceItems();
+  }, [invoiceItems]);
 
   return (
     <Paper elevation={4} className={styles.paper_container}>
@@ -139,10 +171,10 @@ const Home = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {invoiceItems.length === 0 ? (
+            {invoiceItems?.length === 0 ? (
               <TableRow>
                 <TableCell className={styles.notFoundError} colSpan={5}>
-                  {invoiceItems?.length === 0 ? (
+                  {!isLoading && invoiceItems?.length === 0 ? (
                     <Typography>No items available</Typography>
                   ) : (
                     <Typography>Fetching Items... Please wait!!</Typography>
@@ -162,15 +194,17 @@ const Home = () => {
         </Table>
       </TableContainer>
 
-      <Button
-        onClick={openAddModal}
-        variant="contained"
-        color="primary"
-        className={styles.addButton}
-        disabled={isLoading}
-      >
-        + Add Item
-      </Button>
+      {!isPrintingPDF && (
+        <Button
+          onClick={openAddModal}
+          variant="contained"
+          color="primary"
+          className={styles.addButton}
+          disabled={isLoading}
+        >
+          + Add Item
+        </Button>
+      )}
 
       <Payment
         invoiceItems={invoiceItems}
@@ -178,6 +212,25 @@ const Home = () => {
         taxAmount={taxAmount}
         grandTotal={grandTotal}
       />
+
+      <div className={styles.printSection}>
+        <Button
+          onClick={printPDF}
+          variant="contained"
+          color="primary"
+          className={styles.savePDFbutton}
+        >
+          Save PDF
+        </Button>
+
+        <Button
+          onClick={removeAllInvoiceItems}
+          className={styles.savePDFbutton}
+          variant="outlined"
+        >
+          Reset All
+        </Button>
+      </div>
 
       <AddModal
         open={isAdding}
