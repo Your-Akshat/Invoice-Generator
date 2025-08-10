@@ -50,7 +50,11 @@ const Home = () => {
     } else {
       try {
         setIsLoading(true);
-        setInvoiceItems((prev) => [...prev, newItem]);
+        setInvoiceItems((prev) => {
+          const updatedItems = [...prev, newItem];
+          localStorage.setItem("invoice_items", JSON.stringify(updatedItems));
+          return updatedItems;
+        });
         setNewItem({ name: "", price: 0, quantity: 0 });
         setMyErrors({});
         closeAddModal();
@@ -118,7 +122,11 @@ const Home = () => {
   };
 
   const deleteItem = (index) => {
-    setInvoiceItems((prev) => prev.filter((_, i) => i !== index));
+    setInvoiceItems((prev) => {
+      const updatedItems = prev.filter((_, i) => i !== index);
+      localStorage.setItem("invoice_items", JSON.stringify(updatedItems));
+      return updatedItems;
+    });
   };
 
   const printPDF = async () => {
@@ -143,17 +151,9 @@ const Home = () => {
     setIsLoading(false);
   };
 
-  const syncInvoiceItems = () => {
-    localStorage.setItem("invoice_items", JSON.stringify(invoiceItems));
-  };
-
   useEffect(() => {
     getInvoiceItems();
   }, []);
-
-  useEffect(() => {
-    syncInvoiceItems();
-  }, [invoiceItems]);
 
   return (
     <Paper elevation={4} className={styles.paper_container}>
