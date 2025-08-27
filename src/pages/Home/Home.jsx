@@ -75,8 +75,8 @@ const Home = () => {
     } else if (!/^[a-zA-Z0-9-_ ]+$/?.test(newItem?.name?.trim())) {
       newErrors.name =
         "Name can only contain letters, numbers, hyphens (-), underscores (_) and spaces";
-    } else if (newItem?.name?.trim().length > 35) {
-      newErrors.name = "Name is longer than expected";
+    } else if (newItem?.name?.trim().length > 35 || newItem?.name?.trim().length < 3) {
+      newErrors.name = "Invalid name length";
     }
 
     if (!newItem?.price?.toString()?.trim()) {
