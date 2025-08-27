@@ -23,3 +23,20 @@
 //
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
+
+Cypress.Commands.add('openAddItemModal', () => {
+    cy.get('.Home_addButton__v3rO8').click()
+})
+
+Cypress.Commands.add('submitForm', () => {
+    cy.get('.MuiDialogActions-root > .MuiButton-contained').click()
+})
+
+Cypress.Commands.add('fillForm', ({name, price, quantity}) => {
+    if (name !== undefined)
+        cy.get('[name="name"]').clear().type(name)
+    if (price !== undefined)
+        cy.get('[name="price"]').clear().type(price)
+    if (quantity !== undefined)
+        cy.get('[name="quantity"]').clear().type(quantity)
+})
