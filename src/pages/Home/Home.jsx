@@ -22,8 +22,8 @@ const Home = () => {
   const [isAdding, setIsAdding] = useState(false);
   const [newItem, setNewItem] = useState({
     name: "",
-    price: 0,
-    quantity: 0,
+    price: "",
+    quantity: "",
   });
   const [myErrors, setMyErrors] = useState({});
   const [isPrintingPDF, setPrintingPDF] = useState(false);
@@ -95,6 +95,8 @@ const Home = () => {
       newErrors.quantity = "Quantity is required";
     } else if (isNaN(newItem?.quantity)) {
       newErrors.quantity = "Quantity must be a number";
+    } else if (Number(newItem?.quantity)%1 !== 0) {
+      newErrors.quantity = "Quantity can't be a decimal value";
     } else if (Math?.ceil(Number(newItem?.quantity)) <= 0) {
       newErrors.quantity = "Quantity must be greater than 0";
     } else if (Number(newItem?.quantity) > 9999) {
@@ -108,16 +110,10 @@ const Home = () => {
 
   const handleInputChanges = (e) => {
     const { name, value } = e.target;
-    let updatedValue = value;
-
-    if (name === "quantity") {
-      const numericValue = Number(value);
-      updatedValue = isNaN(numericValue) ? value : Math.ceil(numericValue);
-    }
 
     setNewItem((prev) => ({
       ...prev,
-      [name]: updatedValue,
+      [name]: value,
     }));
   };
 
@@ -129,11 +125,11 @@ const Home = () => {
     });
   };
 
-  const printPDF = async () => {
-    setPrintingPDF(true);
-    // add printing logic
-    setPrintingPDF(false);
-  };
+  // const printPDF = async () => {
+  //   setPrintingPDF(true);
+  //   // add printing logic
+  //   setPrintingPDF(false);
+  // };
 
   const removeAllInvoiceItems = () => {
     localStorage.removeItem("invoice_items");
@@ -214,14 +210,14 @@ const Home = () => {
       />
 
       <div className={styles.printSection}>
-        <Button
+        {/* <Button
           onClick={printPDF}
           variant="contained"
           color="primary"
           className={styles.savePDFbutton}
         >
           Save PDF
-        </Button>
+        </Button> */}
 
         <Button
           onClick={removeAllInvoiceItems}
